@@ -38,17 +38,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include<android/log.h>
+#include <android/log.h>
 
-#define TAG "zza-jni" // 这个是自定义的LOG的标识
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__) // 定义LOGD类型
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,TAG ,__VA_ARGS__) // 定义LOGI类型
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN,TAG ,__VA_ARGS__) // 定义LOGW类型
+#define TAG "bsdiff" // 这个是自定义的LOG的标识
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,TAG ,__VA_ARGS__) // 定义LOGE类型
-#define LOGF(...) __android_log_print(ANDROID_LOG_FATAL,TAG ,__VA_ARGS__) // 定义LOGF类型
 
 
-#define MIN(x, y) (((x)<(y)) ? (x) : (y))
+#define   MIN(x, y) (((x)<(y)) ? (x) : (y))
 
 static void split(int64_t *I, int64_t *V, int64_t start, int64_t len, int64_t h) {
     int64_t i, j, k, x, tmp, jj, kk;
@@ -357,20 +353,20 @@ static int bsdiff_internal(const struct bsdiff_request req) {
             offtout((scan - lenb) - (lastscan + lenf), buf + 8);
             offtout((pos - lenb) - (lastpos + lenf), buf + 16);
 
-            LOGE("control data: %s",buf);
-            LOGE("control data: %d",sizeof(buf));
+            LOGE("control data: %s", buf);
+            LOGE("control data: %d", sizeof(buf));
             /* Write control data */
             if (writedata(req.stream, buf, sizeof(buf)))
                 return -1;
 
             /* Write diff data */
-            for (i = 0; i < lenf; i++){
+            for (i = 0; i < lenf; i++) {
                 buffer[i] = req.new[lastscan + i] - req.old[lastpos + i];
-                LOGE("Write diff data: %d ",buffer[i]);
+                LOGE("Write diff data: %d ", buffer[i]);
             }
 
-            LOGE("Write diff data: %s ",buffer);
-            LOGE("Write diff data: %d ",lenf);
+            LOGE("Write diff data: %s ", buffer);
+            LOGE("Write diff data: %d ", lenf);
             if (writedata(req.stream, buffer, lenf))
                 return -1;
 
@@ -378,8 +374,8 @@ static int bsdiff_internal(const struct bsdiff_request req) {
             for (i = 0; i < (scan - lenb) - (lastscan + lenf); i++)
                 buffer[i] = req.new[lastscan + lenf + i];
 
-            LOGE("Write extra data: %s ",buffer);
-            LOGE("Write extra data: %d ",(scan - lenb) - (lastscan + lenf));
+            LOGE("Write extra data: %s ", buffer);
+            LOGE("Write extra data: %d ", (scan - lenb) - (lastscan + lenf));
             if (writedata(req.stream, buffer, (scan - lenb) - (lastscan + lenf)))
                 return -1;
 
